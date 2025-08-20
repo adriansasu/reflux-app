@@ -16,7 +16,6 @@ export default function Index() {
     }
   }, [isAuthenticated, isLoading])
 
-  // Show loading spinner while checking authentication
   if (isLoading) {
     return (
       <View className="flex-1 bg-gray-100 justify-center items-center">
