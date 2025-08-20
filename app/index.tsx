@@ -1,23 +1,32 @@
 import { useAuth } from '@/contexts/AuthContext'
 import { router } from 'expo-router'
 import { useEffect } from 'react'
-import { View } from 'react-native'
+import { ActivityIndicator, View } from 'react-native'
 
 export default function Index() {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, isLoading } = useAuth()
 
   useEffect(() => {
-    // Handle authentication-based routing
-    const timer = setTimeout(() => {
+    if (!isLoading) {
       if (isAuthenticated) {
         router.replace('/(tabs)')
       } else {
         router.replace('/login')
       }
-    }, 100)
+    }
+  }, [isAuthenticated, isLoading])
 
-    return () => clearTimeout(timer)
-  }, [isAuthenticated])
+  // Show loading spinner while checking authentication
+  if (isLoading) {
+    return (
+      <View className="flex-1 bg-gray-100 justify-center items-center">
+        <ActivityIndicator
+          size="large"
+          color="#0CE484"
+        />
+      </View>
+    )
+  }
 
   // Show empty view while redirecting
   return <View className="flex-1 bg-gray-100" />

@@ -15,6 +15,7 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errors, setErrors] = useState({ email: '', password: '', general: '' })
+  const [isLoading, setIsLoading] = useState(false)
   const { login } = useAuth()
 
   const validateInputs = () => {
@@ -43,11 +44,19 @@ export default function LoginScreen() {
       return
     }
 
-    if (email === 'test@example.com' && password === 'password') {
-      login()
+    setIsLoading(true)
+    setErrors({ email: '', password: '', general: '' })
+
+    try {
+      await login({ email, password })
       router.replace('/(tabs)')
-    } else {
-      setErrors({ ...errors, general: 'Email/password incorrect' })
+    } catch (error) {
+      setErrors({
+        ...errors,
+        general: error instanceof Error ? error.message : 'Login failed',
+      })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -111,22 +120,14 @@ export default function LoginScreen() {
 
         <TouchableOpacity
           onPress={handleLogin}
-          className="bg-[#0CE484] rounded-[16px] py-[16px] items-center"
+          disabled={isLoading}
+          className={`${isLoading ? 'bg-gray-400' : 'bg-[#0CE484]'} rounded-[16px] py-[16px] items-center`}
           activeOpacity={0.8}
         >
           <Text className="text-black font-bold text-base tracking-wider">
-            LOGHEAZA-TE
+            {isLoading ? 'LOGGING IN...' : 'LOGHEAZA-TE'}
           </Text>
         </TouchableOpacity>
-
-        <View className="mt-12 p-4 bg-blue-50 rounded-lg border border-blue-200">
-          <Text className="text-blue-700 text-center text-sm">
-            Email: test@example.com
-          </Text>
-          <Text className="text-blue-700 text-center text-sm">
-            Password: password
-          </Text>
-        </View>
       </View>
     </KeyboardAvoidingView>
   )

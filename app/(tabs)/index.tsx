@@ -5,12 +5,15 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 export default function HomeScreen() {
   const { logout } = useAuth()
 
-  const handleLogout = () => {
-    logout()
-    // Use setTimeout to ensure logout state is updated before navigation
-    setTimeout(() => {
+  const handleLogout = async () => {
+    try {
+      await logout()
       router.replace('/login')
-    }, 100)
+    } catch (error) {
+      console.error('Logout failed:', error)
+      //Forcing a bit the logout in case of error
+      router.replace('/login')
+    }
   }
 
   return (
