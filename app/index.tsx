@@ -27,6 +27,6 @@ export default function Index() {
     )
   }
 
-  // Show empty view while redirecting
+  // Show empt
   return <View className="flex-1 bg-gray-100" />
 }
